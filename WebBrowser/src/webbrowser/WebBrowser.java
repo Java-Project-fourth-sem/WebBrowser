@@ -3,6 +3,7 @@ package webbrowser;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import java.net.*;
 import java.io.*;
 
@@ -36,9 +37,23 @@ public class WebBrowser {
         try{
             editor = new JEditorPane(url);
             editor.setEditable(false);
+            editor.addHyperlinkListener(
+                new HyperlinkListener(){
+                    public void hyperlinkUpdate(HyperlinkEvent event){
+                        if(event.getEventType() == HyperlinkEvent.EventType.ACTIVATED){
+                            try{
+                                editor.setPage(event.getURL().toString());
+                            } catch(IOException e){
+                                JOptionPane.showMessageDialog(null, e);
+                            }
+                        }
+                    }
+                }
+            );
         }catch(IOException e){
             JOptionPane.showMessageDialog(null, e);
         }
+        
         scroll = new JScrollPane(editor, 
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
